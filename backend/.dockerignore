@@ -1,0 +1,68 @@
+# Model files and databases
+app/models/__pycache__/
+*.db
+*.sqlite3
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Database
+postgresql_data/
+redis_data/
+
+# Logs
+logs/
+*.log
+
+# Runtime
+*.pid
+
+# Testing
+htmlcov/
+.coverage
+.pytest_cache/
+test-results.xml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Distribution
+build/
+dist/
+*.egg-info/
+
+# Documentation
+docs/_build/
+
+# Jupyter
+.ipynb_checkpoints
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Profiling
+.prof

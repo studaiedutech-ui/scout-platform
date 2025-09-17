@@ -33,7 +33,9 @@
     "logs:db": "docker-compose logs -f postgres",
     "clean": "docker-compose down -v && docker system prune -f && npm run clean:frontend",
     "clean:frontend": "cd frontend && rmdir /s node_modules 2>nul & rmdir /s build 2>nul",
-    "azure:deploy": "az staticwebapp deploy && kubectl apply -f infrastructure/kubernetes/"
+    "azure:deploy": "az staticwebapp deploy && kubectl apply -f infrastructure/kubernetes/",
+    "verify:deployment": "chmod +x scripts/verify-deployment-readiness.sh && scripts/verify-deployment-readiness.sh",
+    "health:check": "curl -f http://localhost:8000/api/v1/health || echo 'Backend not running'"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

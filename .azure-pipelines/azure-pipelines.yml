@@ -1,0 +1,262 @@
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    exclude:
+      - README.md
+      - docs/*
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - README.md
+      - docs/*
+
+variables:
+  - group: scout-platform-variables
+  - name: dockerRegistryServiceConnection
+    value: 'scout-acr-connection'
+  - name: imageRepository
+    value: 'scout-platform'
+  - name: containerRegistry
+    value: 'scoutplatform.azurecr.io'
+  - name: dockerfilePath
+    value: '$(Build.SourcesDirectory)/Dockerfile'
+  - name: tag
+    value: '$(Build.BuildId)'
+  - name: vmImageName
+    value: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and Test
+  jobs:
+  - job: BackendBuild
+    displayName: Build Backend
+    pool:
+      vmImage: $(vmImageName)
+    
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.11'
+      displayName: 'Use Python 3.11'
+    
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+      displayName: 'Install dependencies'
+      workingDirectory: backend
+    
+    - script: |
+        pip install flake8 black isort pytest pytest-cov
+        flake8 app --count --select=E9,F63,F7,F82 --show-source --statistics
+        black --check app
+        isort --check-only app
+      displayName: 'Run linting'
+      workingDirectory: backend
+    
+    - script: |
+        pytest tests/ -v --cov=app --cov-report=xml --cov-report=html
+      displayName: 'Run tests'
+      workingDirectory: backend
+      env:
+        SECRET_KEY: test-secret-key
+        DATABASE_URL: sqlite:///./test.db
+        REDIS_URL: redis://localhost:6379/0
+    
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/test-*.xml'
+        testRunTitle: 'Publish test results for Python'
+    
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageFormat: 'cobertura'
+        summaryFileLocation: 'backend/coverage.xml'
+
+  - job: FrontendBuild
+    displayName: Build Frontend
+    pool:
+      vmImage: $(vmImageName)
+    
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install Node.js'
+    
+    - script: |
+        npm ci
+      displayName: 'Install dependencies'
+      workingDirectory: frontend
+    
+    - script: |
+        npm run lint
+        npm run type-check
+      displayName: 'Run linting and type checking'
+      workingDirectory: frontend
+    
+    - script: |
+        npm run test -- --coverage --watchAll=false
+      displayName: 'Run tests'
+      workingDirectory: frontend
+    
+    - script: |
+        npm run build
+      displayName: 'Build application'
+      workingDirectory: frontend
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: 'frontend/build'
+        artifactName: 'frontend-build'
+        publishLocation: 'Container'
+
+- stage: SecurityScan
+  displayName: Security Scanning
+  dependsOn: Build
+  jobs:
+  - job: SecurityScan
+    displayName: Run Security Scans
+    pool:
+      vmImage: $(vmImageName)
+    
+    steps:
+    - script: |
+        pip install bandit safety
+        bandit -r backend/app -f json -o bandit-report.json || true
+        safety check --json --output safety-report.json || true
+      displayName: 'Python security scan'
+    
+    - script: |
+        npm audit --audit-level moderate
+      displayName: 'Node.js security audit'
+      workingDirectory: frontend
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '$(System.DefaultWorkingDirectory)'
+        artifactName: 'security-reports'
+        publishLocation: 'Container'
+
+- stage: DockerBuild
+  displayName: Build Docker Images
+  dependsOn: 
+    - Build
+    - SecurityScan
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - job: DockerBuild
+    displayName: Build and Push Docker Images
+    pool:
+      vmImage: $(vmImageName)
+    
+    steps:
+    - task: Docker@2
+      displayName: Build and push backend image
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)-backend
+        dockerfile: backend/Dockerfile
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          latest
+    
+    - task: Docker@2
+      displayName: Build and push frontend image
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)-frontend
+        dockerfile: frontend/Dockerfile
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          latest
+
+- stage: DeployStaging
+  displayName: Deploy to Staging
+  dependsOn: DockerBuild
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployStaging
+    displayName: Deploy to Staging Environment
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'scout-platform-staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            displayName: Deploy to AKS Staging
+            inputs:
+              azureSubscription: 'Azure-Service-Connection'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Get AKS credentials
+                az aks get-credentials --resource-group $(RESOURCE_GROUP) --name $(AKS_CLUSTER_NAME)
+                
+                # Update image tags in Kubernetes manifests
+                sed -i "s|IMAGE_TAG_PLACEHOLDER|$(tag)|g" infrastructure/kubernetes/*.yaml
+                
+                # Deploy to staging namespace
+                kubectl apply -f infrastructure/kubernetes/ -n scout-staging
+                
+                # Wait for deployment
+                kubectl rollout status deployment/scout-backend -n scout-staging --timeout=600s
+                kubectl rollout status deployment/scout-frontend -n scout-staging --timeout=600s
+          
+          - script: |
+              # Run smoke tests
+              echo "Running smoke tests on staging environment..."
+              # Add your smoke test commands here
+            displayName: 'Run smoke tests'
+
+- stage: DeployProduction
+  displayName: Deploy to Production
+  dependsOn: DeployStaging
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployProduction
+    displayName: Deploy to Production Environment
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'scout-platform-production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            displayName: Deploy to AKS Production
+            inputs:
+              azureSubscription: 'Azure-Service-Connection'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Get AKS credentials
+                az aks get-credentials --resource-group $(RESOURCE_GROUP) --name $(AKS_CLUSTER_NAME)
+                
+                # Update image tags in Kubernetes manifests
+                sed -i "s|IMAGE_TAG_PLACEHOLDER|$(tag)|g" infrastructure/kubernetes/*.yaml
+                
+                # Deploy to production namespace
+                kubectl apply -f infrastructure/kubernetes/ -n scout-production
+                
+                # Wait for deployment
+                kubectl rollout status deployment/scout-backend -n scout-production --timeout=600s
+                kubectl rollout status deployment/scout-frontend -n scout-production --timeout=600s
+          
+          - script: |
+              # Run post-deployment tests
+              echo "Running post-deployment tests..."
+              # Add your production verification tests here
+            displayName: 'Run production verification tests'

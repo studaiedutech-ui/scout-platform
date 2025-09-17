@@ -141,4 +141,4 @@ models/
 
 # Local configuration
 config/local.json
-secrets/
+secrets/backend/venv/

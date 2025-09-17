@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="S.C.O.U.T. - AI-driven talent acquisition platform that revolutionizes hiring through cultural alignment and intelligent screening."
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="S.C.O.U.T. Platform - AI Talent Orchestrator" />
+    <meta property="og:description" content="Beyond Screening. Beyond Intuition. We Orchestrate Talent." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://app.scout-platform.com" />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.png" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="S.C.O.U.T. Platform - AI Talent Orchestrator" />
+    <meta name="twitter:description" content="Beyond Screening. Beyond Intuition. We Orchestrate Talent." />
+    <meta name="twitter:image" content="%PUBLIC_URL%/twitter-image.png" />
+    
+    <title>S.C.O.U.T. Platform - AI Talent Orchestrator</title>
+  </head>
+  <body class="bg-gray-50 font-sans antialiased">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    
+    <!-- Loading Script -->
+    <script>
+      // Show loading indicator immediately
+      document.addEventListener('DOMContentLoaded', function() {
+        const root = document.getElementById('root');
+        if (root && !root.hasChildNodes()) {
+          root.innerHTML = `
+            <div class="min-h-screen flex items-center justify-center bg-gray-50">
+              <div class="text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+                <p class="mt-4 text-gray-600">Loading S.C.O.U.T. Platform...</p>
+              </div>
+            </div>
+          `;
+        }
+      });
+    </script>
+  </body>
+</html>

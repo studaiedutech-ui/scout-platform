@@ -1,0 +1,55 @@
+{
+  "name": "scout-platform",
+  "version": "1.0.0",
+  "description": "S.C.O.U.T. SaaS Platform - AI-driven talent acquisition platform",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm start",
+    "dev:backend": "docker-compose up backend redis postgres",
+    "setup": "npm install && npm run setup:frontend && npm run setup:docker",
+    "setup:frontend": "cd frontend && npm install",
+    "setup:docker": "docker-compose build",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "docker-compose build backend",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test -- --watchAll=false",
+    "test:backend": "docker-compose run --rm backend python -m pytest tests/ -v",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "docker-compose run --rm backend flake8 app/",
+    "migrate": "docker-compose run --rm backend alembic upgrade head",
+    "db:init": "docker-compose up -d postgres redis && timeout 10 && npm run migrate",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "logs": "docker-compose logs -f",
+    "logs:backend": "docker-compose logs -f backend",
+    "logs:db": "docker-compose logs -f postgres",
+    "clean": "docker-compose down -v && docker system prune -f && npm run clean:frontend",
+    "clean:frontend": "cd frontend && rmdir /s node_modules 2>nul & rmdir /s build 2>nul",
+    "azure:deploy": "az staticwebapp deploy && kubectl apply -f infrastructure/kubernetes/"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "saas",
+    "hr",
+    "recruitment",
+    "ai",
+    "assessment",
+    "talent-acquisition"
+  ],
+  "author": "S.C.O.U.T. Platform Team",
+  "license": "PROPRIETARY"
+}

@@ -3,6 +3,9 @@
 # Region: Central India
 # Resource Group: scout-platform-rg
 
+# IMPORTANT: Set database password before running:
+# $env:DB_ADMIN_PASSWORD = "YourSecurePassword123!"
+
 # =====================================
 # STEP 1: LOGIN AND SETUP (MANDATORY)
 # =====================================
@@ -22,7 +25,7 @@ az acr login --name scoutplatformacr
 # STEP 3: DATABASE & CACHE (MANDATORY)
 # =====================================
 Write-Host "Step 3: Creating PostgreSQL database and Redis cache..." -ForegroundColor Green
-az postgres flexible-server create --resource-group scout-platform-rg --name scout-platform-postgres --location centralindia --admin-user scoutadmin --admin-password "Scout@Platform2024!" --sku-name Standard_B1ms --tier Burstable --storage-size 32 --version 15
+az postgres flexible-server create --resource-group scout-platform-rg --name scout-platform-postgres --location centralindia --admin-user scoutadmin --admin-password "$env:DB_ADMIN_PASSWORD" --sku-name Standard_B1ms --tier Burstable --storage-size 32 --version 15
 
 az postgres flexible-server db create --resource-group scout-platform-rg --server-name scout-platform-postgres --database-name scout_production
 

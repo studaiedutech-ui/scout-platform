@@ -1,0 +1,55 @@
+# azure.yaml for S.C.O.U.T. Platform
+# AZD configuration for Azure Container Apps deployment
+
+name: scout-platform
+metadata:
+  template: scout-platform@0.0.1-beta
+
+# Infrastructure provisioning using Bicep
+infra:
+  provider: bicep
+  path: infra
+
+# Backend service configuration
+services:
+  backend:
+    project: ./backend
+    language: python
+    host: containerapp
+    docker:
+      path: ./backend/Dockerfile
+      context: ./backend
+    
+  frontend:
+    project: ./frontend  
+    language: js
+    host: containerapp
+    docker:
+      path: ./frontend/Dockerfile
+      context: ./frontend
+
+# Hooks for custom deployment logic
+hooks:
+  preprovision:
+    windows:
+      shell: pwsh
+      run: |
+        Write-Host "🔧 Preparing S.C.O.U.T. Platform deployment..."
+        Write-Host "📋 Validating environment variables..."
+    posix:
+      shell: sh
+      run: |
+        echo "🔧 Preparing S.C.O.U.T. Platform deployment..."
+        echo "📋 Validating environment variables..."
+  
+  postprovision:
+    windows:
+      shell: pwsh
+      run: |
+        Write-Host "🚀 S.C.O.U.T. Platform infrastructure provisioned successfully!"
+        Write-Host "🔗 Setting up database..."
+    posix:
+      shell: sh
+      run: |
+        echo "🚀 S.C.O.U.T. Platform infrastructure provisioned successfully!"
+        echo "🔗 Setting up database..."

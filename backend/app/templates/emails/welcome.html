@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to S.C.O.U.T. Platform</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 300;
+        }
+        .content {
+            padding: 30px 20px;
+            background: #ffffff;
+        }
+        .content h2 {
+            color: #007bff;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #dee2e6;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .highlight {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                width: auto;
+            }
+            .header, .content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to S.C.O.U.T. Platform</h1>
+            <p>AI-Powered Talent Acquisition</p>
+        </div>
+        
+        <div class="content">
+            <h2>Hello {{ user_name }}! 👋</h2>
+            
+            <p>Welcome to <strong>{{ company_name }}</strong> on the S.C.O.U.T. Platform! We're thrilled to help you revolutionize your recruitment process with cutting-edge AI technology.</p>
+            
+            <div class="highlight">
+                <p><strong>🎉 Your account has been created successfully!</strong><br>
+                To get started, please verify your email address and explore all the powerful features waiting for you.</p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ activation_link }}" class="button">Verify Email Address</a>
+            </div>
+            
+            <p>If you have any questions or need assistance getting started, our support team is here to help. Simply reply to this email or visit our help center.</p>
+            
+            <p>Ready to transform your hiring process? Let's get started!</p>
+            
+            <p>Best regards,<br>
+            <strong>The S.C.O.U.T. Platform Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; {{ year }} S.C.O.U.T. Platform. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

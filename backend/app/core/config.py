@@ -201,9 +201,115 @@ settings = get_settings()
     # Monitoring
     SENTRY_DSN: str = ""
     
+    # SaaS-specific configurations
+    
+    # Payment Processing (Stripe)
+    STRIPE_PUBLISHABLE_KEY: str = ""
+    STRIPE_SECRET_KEY: str = ""
+    STRIPE_WEBHOOK_SECRET: str = ""
+    
+    # Subscription Management
+    DEFAULT_TRIAL_DAYS: int = 14
+    
+    # Email Configuration for notifications
+    SMTP_SERVER: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    FROM_EMAIL: str = "noreply@scout-platform.com"
+    FROM_NAME: str = "S.C.O.U.T. Platform"
+    
+    # File Upload Settings
+    MAX_FILE_SIZE_MB: int = 10
+    MAX_FILES_PER_UPLOAD: int = 5
+    STORAGE_PROVIDER: str = "local"  # local, azure_blob, s3
+    
+    # Feature Flags for SaaS
+    ENABLE_SIGNUP: bool = True
+    ENABLE_PAYMENTS: bool = True
+    ENABLE_EMAIL_NOTIFICATIONS: bool = True
+    ENABLE_ADMIN_DASHBOARD: bool = True
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
 
 # Create settings instance
+settings = Settings()
+
+# SaaS Plan Configuration
+SUBSCRIPTION_PLANS = {
+    "free": {
+        "name": "Free",
+        "description": "Perfect for trying out SCOUT",
+        "monthly_price": 0,
+        "yearly_price": 0,
+        "features": {
+            "max_jobs": 1,
+            "max_candidates": 10,
+            "max_assessments": 5,
+            "max_users": 1,
+            "max_storage_gb": 1,
+            "ai_assessment_enabled": False,
+            "analytics_enabled": False,
+            "custom_branding": False,
+            "api_access": False,
+            "priority_support": False
+        }
+    },
+    "starter": {
+        "name": "Starter", 
+        "description": "Great for small teams",
+        "monthly_price": 49,
+        "yearly_price": 490,
+        "features": {
+            "max_jobs": 5,
+            "max_candidates": 100,
+            "max_assessments": 50,
+            "max_users": 3,
+            "max_storage_gb": 10,
+            "ai_assessment_enabled": True,
+            "analytics_enabled": True,
+            "custom_branding": False,
+            "api_access": False,
+            "priority_support": False
+        }
+    },
+    "professional": {
+        "name": "Professional",
+        "description": "Ideal for growing companies",
+        "monthly_price": 149,
+        "yearly_price": 1490,
+        "features": {
+            "max_jobs": 25,
+            "max_candidates": 1000,
+            "max_assessments": 500,
+            "max_users": 10,
+            "max_storage_gb": 100,
+            "ai_assessment_enabled": True,
+            "analytics_enabled": True,
+            "custom_branding": True,
+            "api_access": True,
+            "priority_support": True
+        }
+    },
+    "enterprise": {
+        "name": "Enterprise",
+        "description": "Unlimited power for large organizations",
+        "monthly_price": 499,
+        "yearly_price": 4990,
+        "features": {
+            "max_jobs": 0,  # unlimited
+            "max_candidates": 0,  # unlimited
+            "max_assessments": 0,  # unlimited
+            "max_users": 0,  # unlimited
+            "max_storage_gb": 0,  # unlimited
+            "ai_assessment_enabled": True,
+            "analytics_enabled": True,
+            "custom_branding": True,
+            "api_access": True,
+            "priority_support": True
+        }
+    }
+}
 settings = Settings()

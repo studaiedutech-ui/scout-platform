@@ -142,7 +142,8 @@ Thumbs.db
 # AI Model files (too large for git)
 *.model
 *.bin
-models/
+ai_models/
+ml_models/
 
 # Local configuration
 config/local.json

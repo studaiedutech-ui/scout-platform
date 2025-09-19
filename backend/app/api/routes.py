@@ -4,7 +4,7 @@ Aggregates all API endpoints
 """
 
 from fastapi import APIRouter
-from app.api.endpoints import auth, companies, jobs, assessments, candidates, health, subscriptions, admin
+from app.api.endpoints import auth, companies, jobs, assessments, candidates, health, subscriptions, admin, files
 
 api_router = APIRouter()
 
@@ -20,6 +20,7 @@ api_router.include_router(candidates.router, prefix="/candidates", tags=["candid
 
 # SaaS endpoints
 api_router.include_router(subscriptions.router, prefix="/subscriptions", tags=["subscriptions"])
+api_router.include_router(files.router, prefix="/files", tags=["files"])
 
 # Admin endpoints
 api_router.include_router(admin.router, prefix="/admin", tags=["admin"])

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Job Application</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 300;
+        }
+        .content {
+            padding: 30px 20px;
+            background: #ffffff;
+        }
+        .content h2 {
+            color: #17a2b8;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .candidate-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .candidate-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #495057;
+            margin: 0 0 10px 0;
+        }
+        .job-title {
+            font-size: 18px;
+            color: #17a2b8;
+            margin: 0 0 15px 0;
+        }
+        .details {
+            margin: 10px 0;
+        }
+        .details strong {
+            color: #495057;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #17a2b8;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #138496;
+        }
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #dee2e6;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                width: auto;
+            }
+            .header, .content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 New Application Received</h1>
+            <p>S.C.O.U.T. Platform</p>
+        </div>
+        
+        <div class="content">
+            <h2>Hi {{ recruiter_name }},</h2>
+            
+            <p>Great news! You've received a new application for one of your job postings.</p>
+            
+            <div class="candidate-card">
+                <div class="candidate-name">{{ candidate_name }}</div>
+                <div class="job-title">Applied for: {{ job_title }}</div>
+                <div class="details">
+                    <strong>Company:</strong> {{ company_name }}<br>
+                    <strong>Application Date:</strong> {{ application_date | default('Today') }}<br>
+                    <strong>Status:</strong> New Application
+                </div>
+            </div>
+            
+            <p>The candidate's profile and application details are now available for your review in the S.C.O.U.T. Platform dashboard.</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ dashboard_link | default('https://app.scout-platform.com/candidates') }}" class="button">Review Application</a>
+            </div>
+            
+            <p><strong>Next Steps:</strong></p>
+            <ul>
+                <li>Review the candidate's profile and resume</li>
+                <li>Send an AI-powered assessment if configured</li>
+                <li>Schedule an interview if interested</li>
+                <li>Collaborate with your team on the decision</li>
+            </ul>
+            
+            <p>Don't forget to respond to candidates promptly to maintain a positive employer brand!</p>
+            
+            <p>Best regards,<br>
+            <strong>The S.C.O.U.T. Platform Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; {{ year }} S.C.O.U.T. Platform. All rights reserved.</p>
+            <p>{{ company_name }} • Talent Acquisition Notifications</p>
+        </div>
+    </div>
+</body>
+</html>

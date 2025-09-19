@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to {{ plan_name }} Plan</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 300;
+        }
+        .content {
+            padding: 30px 20px;
+            background: #ffffff;
+        }
+        .content h2 {
+            color: #28a745;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .trial-highlight {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            text-align: center;
+            border: 2px solid #28a745;
+        }
+        .trial-highlight h3 {
+            color: #155724;
+            margin: 0 0 10px 0;
+            font-size: 22px;
+        }
+        .trial-highlight p {
+            color: #155724;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .plan-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background: #1e7e34;
+        }
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #dee2e6;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .countdown {
+            font-size: 32px;
+            font-weight: bold;
+            color: #28a745;
+            margin: 10px 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                width: auto;
+            }
+            .header, .content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Welcome to {{ plan_name }} Plan!</h1>
+            <div class="plan-badge">{{ plan_name }}</div>
+        </div>
+        
+        <div class="content">
+            <h2>Congratulations {{ user_name }}!</h2>
+            
+            <p><strong>{{ company_name }}</strong> is now subscribed to the <strong>{{ plan_name }}</strong> plan on S.C.O.U.T. Platform. You've unlocked powerful AI-driven recruitment capabilities!</p>
+            
+            <div class="trial-highlight">
+                <h3>🚀 Your Trial Has Started!</h3>
+                <div class="countdown">{{ trial_days }} Days</div>
+                <p>You have full access to all <strong>{{ plan_name }}</strong> features for the next {{ trial_days }} days.</p>
+                <p><strong>No payment required during your trial period!</strong></p>
+            </div>
+            
+            <p>Welcome aboard! We're excited to help you find amazing talent with the power of AI.</p>
+            
+            <p>Best regards,<br>
+            <strong>The S.C.O.U.T. Platform Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; {{ year }} S.C.O.U.T. Platform. All rights reserved.</p>
+            <p>{{ company_name }} • {{ plan_name }} Plan • Trial expires in {{ trial_days }} days</p>
+        </div>
+    </div>
+</body>
+</html>

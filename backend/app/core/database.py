@@ -178,11 +178,10 @@ def create_db_and_tables():
         logger.info("Creating database tables...")
         
         # Import all models to ensure they're registered
-        from app.models.user import User
-        from app.models.company import Company
-        from app.models.job import Job
-        from app.models.candidate import Candidate
-        from app.models.assessment import Assessment
+        from app.models import (
+            User, Company, Subscription, SubscriptionPlan, Job, Candidate, 
+            Assessment, AssessmentQuestion, AssessmentResponse, File, AuditLog
+        )
         
         # Create all tables
         Base.metadata.create_all(bind=engine)
@@ -210,11 +209,10 @@ async def create_db_and_tables_async():
         logger.info("Creating database tables (async)...")
         
         # Import all models
-        from app.models.user import User
-        from app.models.company import Company
-        from app.models.job import Job
-        from app.models.candidate import Candidate
-        from app.models.assessment import Assessment
+        from app.models import (
+            User, Company, Subscription, SubscriptionPlan, Job, Candidate, 
+            Assessment, AssessmentQuestion, AssessmentResponse, File, AuditLog
+        )
         
         async with async_engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
